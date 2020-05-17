@@ -5,11 +5,11 @@ const URI = process.env.MONGODB_URI
     : 'mongodb://localhost/merndatabase';
 
 mongoose.connect(URI, {
-    useNewUrlParser: true
-    /*useCreateIndex: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
     useUnifiedTopology: false,
     useFindAndModify: false
-    */
+    
 });
 
 const connection = mongoose.connection;

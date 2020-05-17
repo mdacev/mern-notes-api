@@ -5,7 +5,7 @@ const config = require('../configback.js');
 
    
     const token = req.headers['x-access-token'];
-    //console.log("token ---> ", token);
+    console.log("token ---> ", token);
     if(!token || token === '-1'){
         const resp = res.json({
             auth:false , 
