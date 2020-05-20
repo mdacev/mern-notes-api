@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const app = express();
 
 // settings
@@ -29,6 +29,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(cors());
 /*app.use(function (req, res, next) {
 
     res.header("Access-Control-Allow-Origin", '*');
