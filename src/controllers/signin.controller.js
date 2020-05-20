@@ -23,7 +23,7 @@ signinCrtl.signin = async (req, res, next) => {
     }
     catch (err) {
         res.status(400).json({
-            error: err
+            error: { msa: err, msg:'HDP jaja'}
         });
     }
 };
