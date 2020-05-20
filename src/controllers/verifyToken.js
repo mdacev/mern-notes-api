@@ -16,7 +16,7 @@ const config = require('../configback.js');
     }
     const decode =  jwt.verify(token, config.secret);
     req.userId = decode.id;
-    //console.log("req.userId -> ", req.userId);
+    console.log("req.userId -> ", req.userId);
     next();
     
     

@@ -7,7 +7,7 @@ signinCrtl.signin = async (req, res, next) => {
     try {
         
         const {username , password} = req.body;
-        console.log(req.body);
+        console.log(username);
         const user = await User.findOne({username:username});
         console.log(user);
         if(!user){
