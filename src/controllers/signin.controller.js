@@ -18,7 +18,7 @@ signinCrtl.signin = async (req, res, next) => {
             return res.status(220).json({auth:false , token: null, status:202 , msg:'Password incorrecta.'});
         }
         const token = jwt.sign({id: user._id} , config.secret, {expiresIn: config.expiresIn});
-        res.json({auth: true, token, userId: user._id, username: user.username, avatar: user.image_url});
+        return res.json({auth: true, token, userId: user._id, username: user.username, avatar: user.image_url});
         
     }
     catch (err) {

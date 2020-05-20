@@ -18,6 +18,7 @@ userSchema.methods.encryptPassword = async (password) => {
 };
 
 userSchema.methods.validatePassword = function (password){
+    console.log('pass: ', password , this.password);
     return bcrypt.compare(password , this.password);
 };
 
