@@ -19,13 +19,16 @@ signupCrtl.signup = async (req , res ) => {
         try {
 
             console.log('signup...')
-                const { username , password, email } = req.body;
+                const { username , password, email, google, image } = req.body;
                 const fileTypes = new RegExp(/.jpg|.jpeg|.png|.gif/);
                 const mimetype = true; 
                 let _image_url = configback.cloudinary.image_url;
                 let _public_id = configback.cloudinary.public_id;
                 
-                if(req.file !== undefined){
+               
+                if((req.file && req.file !== undefined) && google == "false"){
+
+                    console.log('req.file: ', req.file,'\n google: ', google);
 
                     const ext =  path.extname(req.file.originalname).toLocaleLowerCase();
                     
@@ -40,7 +43,7 @@ signupCrtl.signup = async (req , res ) => {
 
                     //Cloudinary (hay que estar logeado)
                     const result = await cloudinary.v2.uploader.upload(req.file.path);
-                    
+                    console.log('result: ',result);
                     //para eliminar
                     //const result = await cloudinary.v2.uploader.destroy(req.file.path);
                     _image_url = result.url;
@@ -48,7 +51,18 @@ signupCrtl.signup = async (req , res ) => {
                     await fs.unlink(req.file.path);
 
                 }
-                
+
+                if(google == "true"){
+                    const user = await User.findOne({username:username});
+                    
+                    if(user){
+                        return res.json({auth: true, status:200, exist:true, msg:'Your Google user has already registered.\nusername:Google name\npassword:Google email', path:'/'});
+                    }
+                    _image_url = image;
+                    _public_id = _public_id + String(Math.floor(Math.random() * 10000));
+                }
+
+                console.log('_image_url: ',_image_url,'\n_public_id: ', _public_id);
                 //MongoDB
                 const newUser = new User ({
                     username, 
@@ -60,15 +74,17 @@ signupCrtl.signup = async (req , res ) => {
                 
                 
                 newUser.password = await newUser.encryptPassword(newUser.password);
+    
                 await newUser.save();
                 const token =  jwt.sign({id: newUser._id} , configback.secret, {expiresIn: configback.expiresIn});
-                return res.json({auth: true, token, status:200});
+
+                return res.json({auth: true, token, userId: newUser._id, username: newUser.username, password: newUser.password, avatar: newUser.image_url, status:200});
                 
         }
         catch (err) {
             
             if(err.code === 11000){
-                return res.json({auth: false, msg: 'El usuario ya existe.', status:200, code:11000});
+                return res.json({auth: false, msg: 'El usuario ya existe.', status:200, code:err.code});
             }
             return res.status(400).json({
             
